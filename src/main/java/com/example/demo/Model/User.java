@@ -1,15 +1,28 @@
 package com.example.demo.Model;
 
-public abstract class User {
-    String name;
-    String email;
-    String Password;
+import javax.persistence.*;
+@Entity
+@Table(name = "user")
+@Inheritance(strategy = InheritanceType.JOINED)
+public  class User {
+
+
+    @Id
+    @Column(name = "useremail")
+    protected String email;
+    @Column(name = "username")
+    protected String name;
+    @Column(name = "userpassword")
+    protected String password;
+
+    public User() {}
 
     public User(String name, String email, String password) {
         this.name = name;
-        this.email = email;
-        Password = password;
+        this.password = password;
+        this.email=email;
     }
+
 
     public String getName() {
         return name;
@@ -21,18 +34,28 @@ public abstract class User {
 
     public String getEmail() {
         return email;
+
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
+}
