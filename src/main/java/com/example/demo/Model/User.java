@@ -2,10 +2,9 @@ package com.example.demo.Model;
 
 import javax.persistence.*;
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
 public  class User {
-
 
     @Id
     @Column(name = "useremail")
