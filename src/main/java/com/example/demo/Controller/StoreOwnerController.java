@@ -13,6 +13,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/storeapi/storeowner/")
@@ -23,22 +24,22 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     @Autowired
     private StoreOwnerRepository storeOwnerRepository;
 
-    // get all storeowners
+    // get all store owners
     @Override
     @GetMapping("listallstoreowners")
     public List<StoreOwner> listAll() {
         return this.storeOwnerRepository.findAll();
     }
 
-    //get storeowner by email
+    //get store owner by email
     @Override
     @GetMapping("getstoreowner/{email}")
-    public ResponseEntity<StoreOwner> getUserByEmail(@PathVariable(value = "email") String userEmail) {
-        StoreOwner storeOwner = storeOwnerRepository.findById(userEmail).orElseThrow();
-        return ResponseEntity.ok().body(storeOwner);
+    public Optional<StoreOwner> getUserByEmail(@PathVariable(value = "email") String userEmail) {
+        Optional<StoreOwner> storeOwner = storeOwnerRepository.findById(userEmail);
+        return storeOwner;
     }
 
-    // insert storeowner
+    // insert store owner
     @Override
     @PostMapping("addstoreowner")
     public StoreOwner addUser(@Valid @RequestBody StoreOwner user) {
@@ -46,7 +47,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
         return storeOwnerRepository.save(user);
     }
 
-    //update storeowner by email
+    //update store owner by email
     @Override
     @PutMapping("updatestoreowner/{email}")
     public ResponseEntity<StoreOwner> updateUser(@PathVariable(value = "email") String userEmail,
@@ -59,7 +60,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     }
 
 
-    // delete storeowner by email
+    // delete store owner by email
     @Override
     @DeleteMapping("deletestoreowner/{email}")
     public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) {
@@ -71,13 +72,25 @@ public class StoreOwnerController implements UserController<StoreOwner> {
         return response;
     }
 
-    @Override
-    public StoreOwner signUp(@Valid StoreOwner user) throws ResourceNotFoundException {
-        return null;
+
+    // sign up as store owner
+    @PostMapping("signupasstoreowner")
+    public boolean signUp(@Valid StoreOwner user) throws ResourceNotFoundException {
+        if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
+            addUser(user);
+            return true;
+        }
+        return false;
     }
 
+    // login as store owner
     @Override
+    @GetMapping("loginasstoreowner")
     public StoreOwner logIn(@Valid StoreOwner user) throws ResourceNotFoundException {
+        if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
+            user=getUserByEmail(user.getEmail()).get();
+            return user;
+        }
         return null;
     }
 
