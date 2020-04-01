@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.StoreOwner;
 import com.example.demo.Model.User;
 import com.example.demo.Repository.StoreOwnerRepository;
@@ -37,7 +38,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
         return ResponseEntity.ok().body(storeOwner);
     }
 
-    // insert user
+    // insert storeowner
     @Override
     @PostMapping("addstoreowner")
     public StoreOwner addUser(@Valid @RequestBody StoreOwner user) {
@@ -45,7 +46,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
         return storeOwnerRepository.save(user);
     }
 
-    //update user by email
+    //update storeowner by email
     @Override
     @PutMapping("updatestoreowner/{email}")
     public ResponseEntity<StoreOwner> updateUser(@PathVariable(value = "email") String userEmail,
@@ -58,7 +59,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     }
 
 
-    // delete user by email
+    // delete storeowner by email
     @Override
     @DeleteMapping("deletestoreowner/{email}")
     public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) {
@@ -70,6 +71,15 @@ public class StoreOwnerController implements UserController<StoreOwner> {
         return response;
     }
 
+    @Override
+    public StoreOwner signUp(@Valid StoreOwner user) throws ResourceNotFoundException {
+        return null;
+    }
+
+    @Override
+    public StoreOwner logIn(@Valid StoreOwner user) throws ResourceNotFoundException {
+        return null;
+    }
 
 
 }

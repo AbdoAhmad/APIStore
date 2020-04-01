@@ -9,8 +9,11 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "administratoruser")
 public class AdministratorUser extends User {
 
+    public AdministratorUser() {
+        super();
+    }
 
-    public AdministratorUser(String name,String email ,String password) {
+    public AdministratorUser(String name, String email , String password) {
 
         super(name,email, password);
     }

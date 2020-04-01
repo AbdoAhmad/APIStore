@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.NormalUser;
 import com.example.demo.Model.StoreOwner;
 import com.example.demo.Model.User;
@@ -17,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/storeapi/normaluser/")
-
 public class NormalUserController implements UserController<NormalUser> {
 
     @Autowired
@@ -35,12 +35,12 @@ public class NormalUserController implements UserController<NormalUser> {
     //get normaluser by email
     @Override
     @GetMapping("getnormaluser/{email}")
-    public ResponseEntity<NormalUser> getUserByEmail(@PathVariable(value = "email") String userEmail) {
-        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow();
+    public ResponseEntity<NormalUser> getUserByEmail(@PathVariable(value = "email") String userEmail) throws ResourceNotFoundException {
+        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("NormalUser not found for this Email :: " + userEmail));
         return ResponseEntity.ok().body(normalUser);
     }
 
-    // insert user
+    // insert normaluser
     @Override
     @PostMapping("addnormaluser")
     public NormalUser addUser(@Valid @RequestBody NormalUser user) {
@@ -48,12 +48,12 @@ public class NormalUserController implements UserController<NormalUser> {
         return normalUserRepository.save(user);
     }
 
-    //update user by email
+    //update normaluser by email
     @Override
     @PutMapping("updatenormaluser/{email}")
     public ResponseEntity<NormalUser> updateUser(@PathVariable(value = "email") String userEmail,
-                                     @Valid @RequestBody NormalUser userDetails) {
-        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow();
+                                     @Valid @RequestBody NormalUser userDetails) throws ResourceNotFoundException {
+        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("NormalUser not found for this Email :: " + userEmail));
         normalUser.setName(userDetails.getName());
         normalUser.setPassword(userDetails.getPassword());
         final NormalUser updatedNormalUser = normalUserRepository.save(normalUser);
@@ -61,16 +61,27 @@ public class NormalUserController implements UserController<NormalUser> {
     }
 
 
-    // delete user by email
+    // delete normaluser by email
     @Override
-    @DeleteMapping("deletestoreowner/{email}")
-    public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) {
-        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow();
+    @DeleteMapping("deletenormaluser/{email}")
+    public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) throws ResourceNotFoundException {
+        NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("NormalUser not found for this Email :: " + userEmail));
         userRepository.delete(normalUser);
         normalUserRepository.delete(normalUser);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
+    }
+
+    @Override
+    public NormalUser signUp(@Valid NormalUser user) throws ResourceNotFoundException {
+        return null;
+    }
+
+
+    @Override
+    public NormalUser logIn(@Valid NormalUser user) throws ResourceNotFoundException {
+        return null;
     }
 
 }
