@@ -1,7 +1,6 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Exception.ResourceNotFoundException;
-import com.example.demo.Model.AdministratorUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.StoreOwner;
-import com.example.demo.Model.User;
+
 import com.example.demo.Repository.StoreOwnerRepository;
 import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +75,9 @@ public class StoreOwnerController implements UserController<StoreOwner> {
 
     // sign up as store owner
     @PostMapping("signupasstoreowner")
-    public boolean signUp(@Valid StoreOwner user) throws ResourceNotFoundException {
+    public boolean signUp(@Valid @RequestBody StoreOwner user) throws ResourceNotFoundException {
         if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
+
             addUser(user);
             return true;
         }
@@ -86,7 +87,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     // login as store owner
     @Override
     @GetMapping("loginasstoreowner")
-    public StoreOwner logIn(@Valid StoreOwner user) throws ResourceNotFoundException {
+    public StoreOwner logIn(@Valid @RequestBody StoreOwner user) throws ResourceNotFoundException {
         if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
             user=getUserByEmail(user.getEmail()).get();
             return user;

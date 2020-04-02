@@ -2,10 +2,7 @@ package com.example.demo.Controller;
 
 import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.NormalUser;
-import com.example.demo.Model.StoreOwner;
-import com.example.demo.Model.User;
 import com.example.demo.Repository.NormalUserRepository;
-import com.example.demo.Repository.StoreOwnerRepository;
 import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -75,7 +72,7 @@ public class NormalUserController implements UserController<NormalUser> {
 
     // sign up as normal user
     @PostMapping("signupasnormaluser")
-    public boolean  signUp(@Valid NormalUser user){
+    public boolean  signUp(@Valid @RequestBody NormalUser user){
         if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
             addUser(user);
             return true;
@@ -86,7 +83,7 @@ public class NormalUserController implements UserController<NormalUser> {
     // login as normal user
     @Override
     @GetMapping("loginasnormaluser")
-    public NormalUser logIn(@Valid NormalUser user)  {
+    public NormalUser logIn(@Valid @RequestBody NormalUser user)  {
         if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
             user=getUserByEmail(user.getEmail()).get();
             return user;

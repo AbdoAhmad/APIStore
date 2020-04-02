@@ -8,6 +8,7 @@ import javax.persistence.Table;
 @Table(name = "storeowner")
 @PrimaryKeyJoinColumn(name = "storeowneremail")
 public class StoreOwner extends User {
+
     public StoreOwner() {
         super();
     }

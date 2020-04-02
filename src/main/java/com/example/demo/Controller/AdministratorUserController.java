@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Null;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -83,7 +82,7 @@ public class AdministratorUserController implements UserController<Administrator
     // log in as admin
     @Override
     @GetMapping("loginasadmin")
-    public AdministratorUser logIn(@Valid AdministratorUser user)  {
+    public AdministratorUser logIn(@Valid @RequestBody AdministratorUser user)  {
         if(!getUserByEmail(user.getEmail()).equals(Optional.empty())) {
             user=getUserByEmail(user.getEmail()).get();
             return user;
