@@ -69,6 +69,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
 
 
     // sign up as store owner
+    @Override
     @PostMapping("signupasstoreowner")
     public boolean signUp(@Valid @RequestBody StoreOwner user)  {
         if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
@@ -82,7 +83,8 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     @Override
     @GetMapping("loginasstoreowner")
     public StoreOwner logIn(@Valid @RequestBody StoreOwner user) {
-        if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
+        if((!getUserByEmail(user.getEmail()).equals(Optional.empty()))
+                &&(getUserByEmail(user.getEmail()).get().getPassword().equals(user.getPassword()))) {
             user=getUserByEmail(user.getEmail()).get();
             return user;
         }

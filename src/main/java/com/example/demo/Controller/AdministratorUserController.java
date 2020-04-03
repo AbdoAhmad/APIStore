@@ -77,11 +77,22 @@ public class AdministratorUserController implements UserController<Administrator
         return response;
     }
 
+    @Override
+    @PostMapping("signupasadmin")
+    public boolean signUp(@Valid  @RequestBody AdministratorUser user) {
+        if(getUserByEmail(user.getEmail()).equals(Optional.empty())&&administratorUserRepository.count()<1){
+            addUser(user);
+            return true;
+        }
+        return false;
+    }
+
     // log in as admin
     @Override
     @GetMapping("loginasadmin")
     public AdministratorUser logIn(@Valid @RequestBody AdministratorUser user)  {
-        if(!getUserByEmail(user.getEmail()).equals(Optional.empty())) {
+        if((!getUserByEmail(user.getEmail()).equals(Optional.empty()))
+                &&(getUserByEmail(user.getEmail()).get().getPassword().equals(user.getPassword()))) {
             user=getUserByEmail(user.getEmail()).get();
             return user;
         }

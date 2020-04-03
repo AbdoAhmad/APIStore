@@ -65,6 +65,7 @@ public class NormalUserController implements UserController<NormalUser> {
     }
 
     // sign up as normal user
+    @Override
     @PostMapping("signupasnormaluser")
     public boolean  signUp(@Valid @RequestBody NormalUser user){
         if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
@@ -78,7 +79,8 @@ public class NormalUserController implements UserController<NormalUser> {
     @Override
     @GetMapping("loginasnormaluser")
     public NormalUser logIn(@Valid @RequestBody NormalUser user)  {
-        if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
+        if((!getUserByEmail(user.getEmail()).equals(Optional.empty()))
+                &&(getUserByEmail(user.getEmail()).get().getPassword().equals(user.getPassword()))) {
             user=getUserByEmail(user.getEmail()).get();
             return user;
         }
