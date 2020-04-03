@@ -4,7 +4,6 @@ import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.StoreOwner;
 
 import com.example.demo.Repository.StoreOwnerRepository;
-import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +18,6 @@ import java.util.Optional;
 @RequestMapping("/storeapi/storeowner/")
 public class StoreOwnerController implements UserController<StoreOwner> {
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private StoreOwnerRepository storeOwnerRepository;
 
@@ -43,7 +40,6 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     @Override
     @PostMapping("addstoreowner")
     public StoreOwner addUser(@Valid @RequestBody StoreOwner user) {
-        userRepository.save(user);
         return storeOwnerRepository.save(user);
     }
 
@@ -51,8 +47,8 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     @Override
     @PutMapping("updatestoreowner/{email}")
     public ResponseEntity<StoreOwner> updateUser(@PathVariable(value = "email") String userEmail,
-                                     @Valid @RequestBody StoreOwner userDetails) {
-        StoreOwner storeOwner = storeOwnerRepository.findById(userEmail).orElseThrow();
+                                     @Valid @RequestBody StoreOwner userDetails)throws ResourceNotFoundException {
+        StoreOwner storeOwner = storeOwnerRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("StorOwner not found for this Email :: " + userEmail));
         storeOwner.setName(userDetails.getName());
         storeOwner.setPassword(userDetails.getPassword());
         final StoreOwner updatedStoreOwner = storeOwnerRepository.save(storeOwner);
@@ -63,9 +59,8 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     // delete store owner by email
     @Override
     @DeleteMapping("deletestoreowner/{email}")
-    public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) {
-        StoreOwner storeOwner = storeOwnerRepository.findById(userEmail).orElseThrow();
-        userRepository.delete(storeOwner);
+    public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail)throws ResourceNotFoundException {
+        StoreOwner storeOwner = storeOwnerRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("StorOwner not found for this Email :: " + userEmail));
         storeOwnerRepository.delete(storeOwner);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
@@ -75,9 +70,8 @@ public class StoreOwnerController implements UserController<StoreOwner> {
 
     // sign up as store owner
     @PostMapping("signupasstoreowner")
-    public boolean signUp(@Valid @RequestBody StoreOwner user) throws ResourceNotFoundException {
+    public boolean signUp(@Valid @RequestBody StoreOwner user)  {
         if(getUserByEmail(user.getEmail()).equals(Optional.empty())){
-
             addUser(user);
             return true;
         }
@@ -87,7 +81,7 @@ public class StoreOwnerController implements UserController<StoreOwner> {
     // login as store owner
     @Override
     @GetMapping("loginasstoreowner")
-    public StoreOwner logIn(@Valid @RequestBody StoreOwner user) throws ResourceNotFoundException {
+    public StoreOwner logIn(@Valid @RequestBody StoreOwner user) {
         if(!getUserByEmail(user.getEmail()).equals(Optional.empty())){
             user=getUserByEmail(user.getEmail()).get();
             return user;

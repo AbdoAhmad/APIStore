@@ -17,7 +17,7 @@ public interface UserController<T> {
     public T addUser(@Valid @RequestBody T user);
     public ResponseEntity<T> updateUser(@PathVariable(value = "email") String userEmail, @Valid @RequestBody T userDetails) throws ResourceNotFoundException;
     public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) throws ResourceNotFoundException;
-    //public boolean signUp(@Valid @RequestBody T user) throws ResourceNotFoundException;
-    public T logIn(@Valid @RequestBody T user) throws ResourceNotFoundException;
+    //public boolean signUp(@Valid @RequestBody T user);
+    public T logIn(@Valid @RequestBody T user);
 
 }

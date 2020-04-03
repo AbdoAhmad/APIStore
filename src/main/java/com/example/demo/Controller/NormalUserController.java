@@ -3,7 +3,6 @@ package com.example.demo.Controller;
 import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.NormalUser;
 import com.example.demo.Repository.NormalUserRepository;
-import com.example.demo.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +18,7 @@ import java.util.Optional;
 public class NormalUserController implements UserController<NormalUser> {
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private NormalUserRepository normalUserRepository;
-
     // get all normal users
     @Override
     @GetMapping("listallnormalusers")
@@ -42,7 +38,6 @@ public class NormalUserController implements UserController<NormalUser> {
     @Override
     @PostMapping("addnormaluser")
     public NormalUser addUser(@Valid @RequestBody NormalUser user) {
-        userRepository.save(user);
         return normalUserRepository.save(user);
     }
 
@@ -63,7 +58,6 @@ public class NormalUserController implements UserController<NormalUser> {
     @DeleteMapping("deletenormaluser/{email}")
     public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) throws ResourceNotFoundException {
         NormalUser normalUser = normalUserRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("NormalUser not found for this Email :: " + userEmail));
-        userRepository.delete(normalUser);
         normalUserRepository.delete(normalUser);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);

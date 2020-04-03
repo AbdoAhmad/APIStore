@@ -20,7 +20,7 @@ import java.util.Optional;
 public class AdministratorUserController implements UserController<AdministratorUser> {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
     private AdministratorUserRepository administratorUserRepository;
 
@@ -50,7 +50,6 @@ public class AdministratorUserController implements UserController<Administrator
     @Override
     @PostMapping("addadministratoruser")
     public AdministratorUser addUser(@Valid @RequestBody AdministratorUser user) {
-        userRepository.save(user);
         return administratorUserRepository.save(user);
     }
 
@@ -72,7 +71,6 @@ public class AdministratorUserController implements UserController<Administrator
     @DeleteMapping("deleteadministratoruser/{email}")
     public Map<String, Boolean> deleteUser(@PathVariable(value = "email") String userEmail) throws ResourceNotFoundException {
         AdministratorUser administratorUser = administratorUserRepository.findById(userEmail).orElseThrow(() -> new ResourceNotFoundException("AdministratorUser not found for this Email :: " + userEmail));
-        userRepository.delete(administratorUser);
         administratorUserRepository.delete(administratorUser);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
