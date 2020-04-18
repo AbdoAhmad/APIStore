@@ -17,3 +17,4 @@ public class StoreOwner extends User {
         super(name, email,password);
     }
 }
+

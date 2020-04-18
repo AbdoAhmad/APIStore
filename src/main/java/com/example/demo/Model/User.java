@@ -1,10 +1,20 @@
 package com.example.demo.Model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.management.relation.Role;
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public  class User {
+public  class User implements Serializable {
 
     @Id
     @Column(name = "useremail")
@@ -13,6 +23,16 @@ public  class User {
     protected String name;
     @Column(name = "userpassword")
     protected String password;
+    @Column(name = "role")
+    private String roles ;
+
+    public Set<String> getRoles() {
+        return Collections.singleton(roles);
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
 
     public User() {}
 
@@ -44,7 +64,6 @@ public  class User {
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }

@@ -1,55 +1,47 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Exception.ResourceNotFoundException;
 import com.example.demo.Model.AdministratorUser;
-import com.example.demo.Model.User;
 import com.example.demo.Repository.AdministratorUserRepository;
-import com.example.demo.Repository.UserRepository;
-import com.example.demo.Service.AdministratorUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/storeapi/administratoruser/")
-public class AdministratorUserController implements UserController<AdministratorUser> {
+public class AdministratorUserController extends UserController<AdministratorUser> {
 
     @Autowired
-    private AdministratorUserService administratorUserService;
+    private AdministratorUserRepository administratorUserRepository;
 
 
-    // get all users types
+
+    // list all users
     @GetMapping("listall")
-    public List<User> listAllUsers() {
-        return this.administratorUserService.listAllUsers();
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<?> listAll() {
+        return this.userRepository.findAll();
     }
 
     @Override
-    @PostMapping("signupasadmin")
-    public boolean signUp(@Valid  @RequestBody AdministratorUser user) {
-        if(administratorUserService.getUserByEmail(user.getEmail()).equals(Optional.empty())&&administratorUserService.count()<1){
-            administratorUserService.addUser(user);
-            return true;
+    public ResponseEntity<String> signUp(@Valid  @RequestBody AdministratorUser user) {
+        if (userRepository.existsById(user.getEmail())) {
+            return ResponseEntity.badRequest().body("Error: Email is already taken!");
         }
-        return false;
+        else if(administratorUserRepository.count()>=1){
+            return ResponseEntity.badRequest().body("Error: Server already Admin !");
+        }
+
+        user.setPassword(encoder.encode(user.getPassword()));
+        user.setRoles("ROLE_ADMIN");
+        administratorUserRepository.save(user);
+        return ResponseEntity.ok("User registered successfully as Admin!");
     }
 
-    // log in as admin
-    @Override
-    @GetMapping("loginasadmin")
-    public AdministratorUser logIn(@Valid @RequestBody AdministratorUser user)  {
-        if((!administratorUserService.getUserByEmail(user.getEmail()).equals(Optional.empty()))
-                &&(administratorUserService.getUserByEmail(user.getEmail()).get().getPassword().equals(user.getPassword()))) {
-            user=administratorUserService.getUserByEmail(user.getEmail()).get();
-            return user;
-        }
-        return null;
-    }
 
 }
